@@ -4,6 +4,28 @@ help: ## Display this help
 
 .PHONY: init
 init: ## Init database
-	@[ -e var/db.sqlite ] && rm var/db.sqlite
+	@rm -f var/db.sqlite
 	@sqlite3 -line var/db.sqlite 'CREATE TABLE php_release(version VARCHAR(15) PRIMARY KEY, release_date DATE NOT NULL);'
 	@sqlite3 -line var/db.sqlite 'CREATE TABLE php_version(version VARCHAR(15) PRIMARY KEY, last_release VARCHAR(15) NOT NULL, initial_release_date DATE NOT NULL, active_support_until DATE, end_of_life_date DATE NOT NULL);'
+
+.PHONY: clean
+clean: ## Clean project files
+	@rm -f var/db.sqlite
+	@docker-compose down
+
+.PHONY:
+serve: ## Run project through docker-compose
+	@echo "--> Start containers"
+	@docker-compose up -d --force-recreate
+
+	@echo "--> Install vendors"
+	@docker-compose exec fpm composer install
+
+ifeq (,$(wildcard var/db.sqlite))
+	@echo "--> Initialize database"
+	@docker-compose exec fpm sqlite3 -line var/db.sqlite 'CREATE TABLE php_release(version VARCHAR(15) PRIMARY KEY, release_date DATE NOT NULL);'
+	@docker-compose exec fpm sqlite3 -line var/db.sqlite 'CREATE TABLE php_version(version VARCHAR(15) PRIMARY KEY, last_release VARCHAR(15) NOT NULL, initial_release_date DATE NOT NULL, active_support_until DATE, end_of_life_date DATE NOT NULL);'
+
+	@echo "--> synchronize data"
+	@docker-compose exec fpm php bin/console synchronize
+endif

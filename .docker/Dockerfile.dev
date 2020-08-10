@@ -1,7 +1,7 @@
 FROM phpdaily/php:8.0.0-dev-cli-alpine
 
 # System dependencies
-RUN apk add --update bash
+RUN apk add --update bash sqlite
 
 # Install Composer
 RUN wget https://getcomposer.org/composer.phar \
