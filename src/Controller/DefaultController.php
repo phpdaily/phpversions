@@ -12,6 +12,9 @@ final class DefaultController
     {
         return new Response(<<<HTML
 <html>
+    <head>
+        <title>phpversions</title>
+    </head>
     <body>
         An API that expose all PHP versions:
         <ul>
