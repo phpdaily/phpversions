@@ -7,26 +7,26 @@ versions_all:
     path: /all.{_format}
     methods: [GET]
     controller: App\Controller\VersionsController::all
-    requirements: [_format: json]
-    defaults: [_format: json]
+    requirements: {_format: json}
+    defaults: {_format: json}
 
 versions_current:
     path: /current.{_format}
     methods: [GET]
     controller: App\Controller\VersionsController::current
-    requirements: [_format: json]
-    defaults: [_format: json]
+    requirements: {_format: json}
+    defaults: {_format: json}
 
 versions_eol:
     path: /eol.{_format}
     methods: [GET]
     controller: App\Controller\VersionsController::eol
-    requirements: [_format: json]
-    defaults: [_format: json]
+    requirements: {_format: json}
+    defaults: {_format: json}
 
 versions_releases:
     path: /releases.{_format}
     methods: [GET]
     controller: App\Controller\VersionsController::releases
-    requirements: [_format: json]
-    defaults: [_format: json]
+    requirements: {_format: json}
+    defaults: {_format: json}
