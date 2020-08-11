@@ -19,7 +19,7 @@ serve: ## Run project through docker-compose
 	@docker-compose up -d --force-recreate
 
 	@echo "--> Install vendors"
-	@docker-compose exec fpm composer install
+	@docker-compose exec fpm composer install --no-dev
 
 ifeq (,$(wildcard var/db.sqlite))
 	@echo "--> Initialize database"
