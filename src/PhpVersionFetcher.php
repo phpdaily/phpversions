@@ -18,6 +18,7 @@ final class PhpVersionFetcher
     private const SUPPORTED_VERSIONS_URL = 'https://www.php.net/supported-versions';
     private const END_OF_LIFE_URL = 'https://www.php.net/eol.php';
     private const RELEASES_URL = 'https://www.php.net/releases/index.php';
+    private const STABLE_VERSIONS = 'https://www.php.net/downloads';
 
     public function __construct(
         private HttpClientInterface $http,
@@ -100,6 +101,26 @@ final class PhpVersionFetcher
     {
         $releases = new Collection();
 
+        // stable versions
+        $response = $this->http->request('GET', self::STABLE_VERSIONS);
+
+        $crawler = new Crawler($response->getContent(true));
+        $content = $crawler->filter('h3');
+        foreach ($content as $key => $element) {
+            if ('gpg' === substr($element->attributes['id']->value, 0,3)) {
+                continue;
+            }
+
+            $version = substr($element->attributes['id']->value, 1);
+            $releaseDateText = $crawler->filter('.content-box')->eq($key)->filter('.releasedate')->first()->text();
+
+            $releases[$version] = new PhpRelease(
+                $version,
+                new DateTimeImmutable($releaseDateText),
+            );
+        }
+
+        // unsupported historical releases
         $response = $this->http->request('GET', self::RELEASES_URL);
 
         $crawler = new Crawler($response->getContent(true));
