@@ -12,12 +12,12 @@ final class PhpVersionNormalizer implements NormalizerInterface
     /**
      * @param PhpVersion $object
      */
-    public function normalize($object, string $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = []): array
     {
         return $object->toArray();
     }
 
-    public function supportsNormalization($data, string $format = null)
+    public function supportsNormalization($data, string $format = null): bool
     {
         return $data instanceof PhpVersion;
     }
