@@ -25,7 +25,7 @@ final class SynchronizeCommand extends Command
         parent::__construct('synchronize');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('<info>Process current versions</info>');
         $currents = $this->fetcher->currents();
