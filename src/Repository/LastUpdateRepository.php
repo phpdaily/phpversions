@@ -17,6 +17,13 @@ final class LastUpdateRepository
     ) {
     }
 
+    public function get(): DateTimeImmutable
+    {
+        $stmt = $this->db->query('SELECT * FROM last_update;');
+
+        return new DateTimeImmutable($stmt->fetchColumn());
+    }
+
     public function save(): void
     {
         $this->db->beginTransaction();
