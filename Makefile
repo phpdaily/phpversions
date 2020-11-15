@@ -5,8 +5,9 @@ help: ## Display this help
 .PHONY: init
 init: ## Init database
 	@rm -f var/db.sqlite
-	@sqlite3 -line var/db.sqlite 'CREATE TABLE php_release(version VARCHAR(15) PRIMARY KEY, release_date DATE NOT NULL);'
-	@sqlite3 -line var/db.sqlite 'CREATE TABLE php_version(version VARCHAR(15) PRIMARY KEY, last_release VARCHAR(15) NOT NULL, initial_release_date DATE NOT NULL, active_support_until DATE, end_of_life_date DATE NOT NULL);'
+	@sqlite3 -line var/db.sqlite 'CREATE TABLE IF NOT EXISTS php_release(version VARCHAR(15) PRIMARY KEY, release_date DATE NOT NULL);'
+	@sqlite3 -line var/db.sqlite 'CREATE TABLE IF NOT EXISTS php_version(version VARCHAR(15) PRIMARY KEY, last_release VARCHAR(15) NOT NULL, initial_release_date DATE NOT NULL, active_support_until DATE, end_of_life_date DATE NOT NULL);'
+	@sqlite3 -line var/db.sqlite 'CREATE TABLE IF NOT EXISTS last_update(last_update DATETIME NOT NULL);'
 
 .PHONY: clean
 clean: ## Clean project files
@@ -23,9 +24,10 @@ serve: ## Run project through docker-compose
 
 ifeq (,$(wildcard var/db.sqlite))
 	@echo "--> Initialize database"
-	@docker-compose exec fpm sqlite3 -line var/db.sqlite 'CREATE TABLE php_release(version VARCHAR(15) PRIMARY KEY, release_date DATE NOT NULL);'
-	@docker-compose exec fpm sqlite3 -line var/db.sqlite 'CREATE TABLE php_version(version VARCHAR(15) PRIMARY KEY, last_release VARCHAR(15) NOT NULL, initial_release_date DATE NOT NULL, active_support_until DATE, end_of_life_date DATE NOT NULL);'
+	@docker-compose exec fpm sqlite3 -line var/db.sqlite 'CREATE TABLE IF NOT EXISTS php_release(version VARCHAR(15) PRIMARY KEY, release_date DATE NOT NULL);'
+	@docker-compose exec fpm sqlite3 -line var/db.sqlite 'CREATE TABLE IF NOT EXISTS php_version(version VARCHAR(15) PRIMARY KEY, last_release VARCHAR(15) NOT NULL, initial_release_date DATE NOT NULL, active_support_until DATE, end_of_life_date DATE NOT NULL);'
+	@docker-compose exec fpm sqlite3 -line var/db.sqlite 'CREATE TABLE IF NOT EXISTS last_update(last_update DATETIME NOT NULL);'
 
-	@echo "--> synchronize data"
+	@echo "--> Synchronize data"
 	@docker-compose exec fpm php bin/console synchronize
 endif
