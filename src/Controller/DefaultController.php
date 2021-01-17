@@ -29,7 +29,7 @@ final class DefaultController
             <li><a href="/all.json">All main PHP versions</a></li>
             <li><a href="/releases.json">All PHP releases versions</a></li>
             <li><a href="/current.json">Maintened versions</a></li>
-            <li><a href="/eol.json">Unmainted versions</a></li>
+            <li><a href="/eol.json">Unmaintened versions</a></li>
         </ul>
         <p>Last update: $lastUpdate</p>
     </body>
