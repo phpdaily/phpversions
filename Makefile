@@ -14,7 +14,7 @@ clean: ## Clean project files
 	@rm -f var/db.sqlite
 	@docker-compose down
 
-.PHONY:
+.PHONY: serve
 serve: ## Run project through docker-compose
 	@echo "--> Start containers"
 	@docker-compose up -d --force-recreate
@@ -31,3 +31,8 @@ ifeq (,$(wildcard var/db.sqlite))
 	@echo "--> Synchronize data"
 	@docker-compose exec fpm php bin/console synchronize
 endif
+
+.PHONY: sync
+sync: ## Synchronize PHP versions
+	@echo "--> Synchronize data"
+	@docker-compose exec fpm bin/console synchronize
