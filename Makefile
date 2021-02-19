@@ -2,6 +2,11 @@
 help: ## Display this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
+.PHONY: build
+build: ## Build containers
+	DOCKER_BUILDKIT=1 docker-compose pull
+	DOCKER_BUILDKIT=1 docker-compose build
+
 .PHONY: init
 init: ## Init database
 	@rm -f var/db.sqlite
@@ -17,7 +22,7 @@ clean: ## Clean project files
 .PHONY: serve
 serve: ## Run project through docker-compose
 	@echo "--> Start containers"
-	@docker-compose up -d --force-recreate
+	@DOCKER_BUILDKIT=1 docker-compose up -d --force-recreate
 
 	@echo "--> Install vendors"
 	@docker-compose exec fpm composer install --no-dev
