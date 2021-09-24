@@ -3,6 +3,10 @@ index:
     methods: [GET]
     controller: App\Controller\DefaultController::index
 
+status:
+    path: /status
+    controller: App\Controller\StatusController
+
 versions_all:
     path: /all.{_format}
     methods: [GET]
