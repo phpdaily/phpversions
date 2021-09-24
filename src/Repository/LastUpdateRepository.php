@@ -8,6 +8,7 @@ use App\Clock;
 use DateTimeImmutable;
 use PDO;
 use PDOException;
+use RuntimeException;
 
 final class LastUpdateRepository
 {
@@ -20,8 +21,11 @@ final class LastUpdateRepository
     public function get(): DateTimeImmutable
     {
         $stmt = $this->db->query('SELECT * FROM last_update;');
+        if (false === ($date = $stmt->fetchColumn())) {
+            throw new RuntimeException('Data has never been updated.');
+        }
 
-        return new DateTimeImmutable($stmt->fetchColumn());
+        return new DateTimeImmutable($date);
     }
 
     public function save(): void

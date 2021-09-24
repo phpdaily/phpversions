@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Repository\LastUpdateRepository;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\Response;
 
 final class DefaultController
@@ -16,7 +17,11 @@ final class DefaultController
 
     public function index(): Response
     {
-        $lastUpdate = $this->repository->get()->format('Y-m-d H:i:s');
+        try {
+            $lastUpdate = $this->repository->get()->format('Y-m-d H:i:s');
+        } catch (RuntimeException $e) {
+            $lastUpdate = $e->getMessage();
+        }
 
         return new Response(<<<HTML
 <html>
