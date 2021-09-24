@@ -1,4 +1,4 @@
-FROM phpdaily/php:8.1.0-dev-fpm-alpine3.12
+FROM phpdaily/php:8.1-fpm-alpine3.14
 
 # System dependencies
 RUN apk add --update bash sqlite supervisor
