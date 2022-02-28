@@ -7,9 +7,9 @@ namespace App\Command;
 use App\{
     Clock,
     PhpVersionFetcher,
-    Repository\LastUpdateRepository,
-    Repository\PhpReleaseRepository,
-    Repository\PhpVersionRepository,
+    Repository\PDO\LastUpdateRepository,
+    Repository\PDO\PdoPhpReleaseRepository,
+    Repository\PDO\PdoPhpVersionRepository,
 };
 use Symfony\Component\Console\{
     Command\Command,
@@ -22,8 +22,8 @@ final class SynchronizeCommand extends Command
     public function __construct(
         private Clock $clock,
         private LastUpdateRepository $lastUpdateRepository,
-        private PhpReleaseRepository $releaseRepository,
-        private PhpVersionRepository $versionRepository,
+        private PdoPhpReleaseRepository $releaseRepository,
+        private PdoPhpVersionRepository $versionRepository,
         private PhpVersionFetcher $fetcher,
     ) {
         parent::__construct('synchronize');

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Repository;
+namespace App\Repository\PDO;
 
 use App\Clock;
 use DateTimeImmutable;

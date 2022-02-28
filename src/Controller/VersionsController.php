@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Repository\{
-    PhpReleaseRepository,
-    PhpVersionRepository,
+    PDO\PdoPhpReleaseRepository,
+    PDO\PdoPhpVersionRepository,
 };
 use Symfony\Component\HttpFoundation\{
     JsonResponse,
@@ -23,28 +23,28 @@ final class VersionsController
     ) {
     }
 
-    public function all(PhpVersionRepository $repository): Response
+    public function all(PdoPhpVersionRepository $repository): Response
     {
         $versions = $repository->all();
 
         return $this->createResponse($versions);
     }
 
-    public function current(PhpVersionRepository $repository): Response
+    public function current(PdoPhpVersionRepository $repository): Response
     {
         $versions = $repository->maintenedVersions();
 
         return $this->createResponse($versions);
     }
 
-    public function eol(PhpVersionRepository $repository): Response
+    public function eol(PdoPhpVersionRepository $repository): Response
     {
         $versions = $repository->unmaintenedVersions();
 
         return $this->createResponse($versions);
     }
 
-    public function releases(PhpReleaseRepository $repository): Response
+    public function releases(PdoPhpReleaseRepository $repository): Response
     {
         $releases = $repository->all();
 
