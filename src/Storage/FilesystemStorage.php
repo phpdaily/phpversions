@@ -7,7 +7,7 @@ namespace App\Storage;
 use App\Clock;
 use App\Model\PhpVersion;
 use App\Storage;
-use JDecool\Collection\Collection;
+use Illuminate\Support\Collection;
 use RuntimeException;
 use Symfony\Component\Serializer\SerializerInterface;
 

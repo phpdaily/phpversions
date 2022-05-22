@@ -6,7 +6,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-pdo": "*",
-        "jdecool/collection": "dev-master",
+        "illuminate/collections": "^9.13",
         "symfony/console": "6.0.*",
         "symfony/css-selector": "6.0.*",
         "symfony/dom-crawler": "6.0.*",

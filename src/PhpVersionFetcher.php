@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App;
 
-use JDecool\Collection\Collection;
 use App\{
     Model\PhpRelease,
     Model\PhpVersion,
 };
 use DateTimeImmutable;
+use Illuminate\Support\Collection;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
