@@ -29,11 +29,29 @@ final class FilesystemStorage implements Storage
         $this->writeMaintenedVersions($versions);
         $this->writeUnmaintenedVersions($versions);
         $this->writeReleaseVersions($releases);
+
+        $this->writeContent('index.html', <<<HTML
+<html>
+    <head>
+        <title>phpversions</title>
+    </head>
+    <body>
+        <p>An API that expose all PHP versions:</p>
+        <ul>
+            <li><a href="/all.json">All main PHP versions</a></li>
+            <li><a href="/releases.json">All PHP releases versions</a></li>
+            <li><a href="/maintened.json">Maintened versions</a></li>
+            <li><a href="/unmaintened.json">Unmainted versions</a></li>
+        </ul>
+        <p>Last update: {$this->clock->now()->format('Y-m-d H:i:s')}</p>
+    </body>
+</html>
+HTML);
     }
 
     private function writeAllVersionsFile(iterable $versions): void
     {
-        $this->writeFile('all.json', $versions);
+        $this->writeJson('all.json', $versions);
     }
 
     /**
@@ -45,7 +63,7 @@ final class FilesystemStorage implements Storage
             fn (PhpVersion $version): bool => $version->getEndOfLife() > $this->clock->now(),
         );
 
-        $this->writeFile('maintened.json', $data);
+        $this->writeJson('maintened.json', $data);
     }
 
     private function writeUnmaintenedVersions(iterable $versions): void
@@ -54,24 +72,29 @@ final class FilesystemStorage implements Storage
             fn (PhpVersion $version): bool => $version->getEndOfLife() <= $this->clock->now(),
         );
 
-        $this->writeFile('unmaintened.json', $data);
+        $this->writeJson('unmaintened.json', $data);
     }
 
     private function writeReleaseVersions(iterable $releases): void
     {
-        $this->writeFile('releases.json', $releases);
+        $this->writeJson('releases.json', $releases);
     }
 
-    private function writeFile(string $path, iterable $data): void
+    private function writeJson(string $file, iterable $data): void
     {
-        $fullpath = rtrim($this->outputFolder, DIRECTORY_SEPARATOR).'/'.ltrim($path, DIRECTORY_SEPARATOR);
+        $this->writeContent($file, ['items' => $this->serializer->serialize($data, 'json')]);
+    }
+
+    private function writeContent(string $file, iterable|string $data): void
+    {
+        $fullpath = rtrim($this->outputFolder, DIRECTORY_SEPARATOR).'/'.ltrim($file, DIRECTORY_SEPARATOR);
 
         $basedir = dirname($fullpath);
         if (!file_exists($basedir)) {
             @mkdir($basedir, 0777, true);
         }
 
-        if (false === file_put_contents($fullpath, ['items' => $this->serializer->serialize($data, 'json')])) {
+        if (false === file_put_contents($fullpath, $data)) {
             throw new RuntimeException("An error occured while writing file.");
         }
     }
