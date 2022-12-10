@@ -75,7 +75,7 @@ final class PhpVersionFetcher
             $cols = (new Crawler($row))->filter('td');
 
             $version = $cols->eq(0)->text();
-            $endOfLife = new DateTimeImmutable($cols->eq(1)->text());
+            $endOfLife = $this->extractDate($cols->eq(1)->text());
             $lastRelease = $cols->eq(3)->text();
 
             $initialVersion = "3.0" !== $version ? "$version.0" : "$version.x";
@@ -140,5 +140,12 @@ final class PhpVersionFetcher
         }
 
         return $releases;
+    }
+
+    private function extractDate(string $str): DateTimeImmutable
+    {
+        $date = substr($str, 0, strpos($str, '(') ?? strlen($str));
+
+        return new DateTimeImmutable($date);
     }
 }
