@@ -7,9 +7,7 @@ namespace App\Command;
 use App\{
     Clock,
     PhpVersionFetcher,
-    Repository\PDO\LastUpdateRepository,
-    Repository\PDO\PdoPhpReleaseRepository,
-    Repository\PDO\PdoPhpVersionRepository,
+    Storage,
 };
 use Symfony\Component\Console\{
     Command\Command,
@@ -21,33 +19,39 @@ final class SynchronizeCommand extends Command
 {
     public function __construct(
         private Clock $clock,
-        private LastUpdateRepository $lastUpdateRepository,
-        private PdoPhpReleaseRepository $releaseRepository,
-        private PdoPhpVersionRepository $versionRepository,
         private PhpVersionFetcher $fetcher,
+        private Storage $storage,
+        string $name
     ) {
-        parent::__construct('synchronize');
+        parent::__construct($name);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $currentTime = $this->clock->now()->format('Y-m-d H:i:s');
-        $output->writeln("<info>[$currentTime] Process current versions</info>");
-        $currents = $this->fetcher->currents();
-        $this->versionRepository->save(...$currents);
+        $versions = [];
 
-        $currentTime = $this->clock->now()->format('Y-m-d H:i:s');
-        $output->writeln("<info>[$currentTime] Process unmaintened versions</info>");
-        $eol = $this->fetcher->eol();
-        $this->versionRepository->save(...$eol);
+        $this->log($output, 'Fetch current versions');
+        foreach ($this->fetcher->currents() as $version) {
+            $versions[] = $version;
+        }
 
-        $currentTime = $this->clock->now()->format('Y-m-d H:i:s');
-        $output->writeln("<info>[$currentTime] Process releases versions</info>");
+        $this->log($output, 'Fetch unmaintened versions');
+        foreach ($this->fetcher->eol() as $version) {
+            $versions[] = $version;
+        }
+
+        $this->log($output, 'Fetch releases versions');
         $releases = $this->fetcher->releases();
-        $this->releaseRepository->save(...$releases);
 
-        $this->lastUpdateRepository->save();
+        $this->log($output, 'Write data');
+        $this->storage->write($versions, $releases);
 
         return 0;
+    }
+
+    private function log(OutputInterface $output, string $text): void
+    {
+        $currentTime = $this->clock->now()->format('Y-m-d H:i:s');
+        $output->writeln("<info>[$currentTime] $text</info>");
     }
 }

@@ -6,29 +6,33 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-pdo": "*",
-        "jdecool/collection": "dev-master",
-        "symfony/console": "5.3.*",
-        "symfony/css-selector": "5.3.*",
-        "symfony/dom-crawler": "5.3.*",
-        "symfony/dotenv": "5.3.*",
+        "bentools/iterable-functions": "^2.1",
+        "illuminate/collections": "^9.13",
+        "symfony/console": "6.2.*",
+        "symfony/css-selector": "6.2.*",
+        "symfony/dom-crawler": "6.2.*",
+        "symfony/dotenv": "6.2.*",
         "symfony/flex": "^1.16.0",
-        "symfony/framework-bundle": "5.3.*",
-        "symfony/http-client": "5.3.*",
-        "symfony/serializer": "5.3.*",
-        "symfony/yaml": "5.3.*"
+        "symfony/framework-bundle": "6.2.*",
+        "symfony/http-client": "6.2.*",
+        "symfony/serializer": "6.2.*",
+        "symfony/yaml": "6.2.*"
     },
     "require-dev": {
-        "symfony/stopwatch": "5.3.*",
-        "symfony/twig-bundle": "5.3.*",
-        "symfony/var-dumper": "5.3.*",
-        "symfony/web-profiler-bundle": "5.3.*"
+        "symfony/stopwatch": "6.2.*",
+        "symfony/twig-bundle": "6.2.*",
+        "symfony/var-dumper": "6.2.*",
+        "symfony/web-profiler-bundle": "6.2.*"
     },
     "config": {
         "optimize-autoloader": true,
         "preferred-install": {
             "*": "dist"
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "symfony/flex": true
+        }
     },
     "autoload": {
         "psr-4": {
@@ -67,7 +71,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "5.3.*"
+            "require": "6.2.*"
         }
     }
 }

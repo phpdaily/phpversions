@@ -2,14 +2,29 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
+        bind:
+            string $outputFolder: '%env(FILESYSTEM_ROOT)%'
 
     App\:
         resource: '../src/'
         exclude:
+            - '../src/Command/SynchronizeCommand.php'
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
             - '../src/Tests/'
+
+    App\Command\SynchronizeCommand.db:
+        class: App\Command\SynchronizeCommand
+        arguments:
+            $storage: '@App\Storage\PDOStorage'
+            $name: 'synchronize:database'
+
+    App\Command\SynchronizeCommand.fs:
+        class: App\Command\SynchronizeCommand
+        arguments:
+            $storage: '@App\Storage\FilesystemStorage'
+            $name: 'synchronize:files'
 
     App\Controller\:
         resource: '../src/Controller/'

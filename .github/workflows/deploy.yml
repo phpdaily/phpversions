@@ -1,0 +1,42 @@
+name: deploy
+on:
+    push:
+        branches: [main]
+    workflow_dispatch:
+
+permissions:
+    contents: read
+    pages: write
+    id-token: write
+
+concurrency:
+    group: "pages"
+    cancel-in-progress: true
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        env:
+            FILESYSTEM_ROOT: dist
+        steps:
+            - uses: actions/checkout@master
+            - uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.2
+            - name: Install composer dependencies
+              uses: ramsey/composer-install@v2
+            - run: php bin/console synchronize:files
+            - uses: actions/upload-pages-artifact@v1
+              with:
+                  path: ./dist
+
+    pages:
+        needs: build
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+        runs-on: ubuntu-latest
+        steps:
+            - name: Deploy to GitHub Pages
+              id: deployment
+              uses: actions/deploy-pages@v1
