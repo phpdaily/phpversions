@@ -6,6 +6,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-pdo": "*",
+        "bentools/iterable-functions": "^2.1",
         "illuminate/collections": "^9.13",
         "symfony/console": "6.2.*",
         "symfony/css-selector": "6.2.*",

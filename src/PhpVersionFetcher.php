@@ -76,7 +76,7 @@ final class PhpVersionFetcher
 
             $version = $cols->eq(0)->text();
             $endOfLife = $this->extractDate($cols->eq(1)->text());
-            $lastRelease = $cols->eq(3)->text();
+            $lastRelease = $cols->eq(2)->text();
 
             $initialVersion = "3.0" !== $version ? "$version.0" : "$version.x";
 

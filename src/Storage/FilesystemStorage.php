@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Storage;
 
 use App\Clock;
+use App\Model\PhpRelease;
 use App\Model\PhpVersion;
 use App\Storage;
 use Illuminate\Support\Collection;
 use RuntimeException;
 use Symfony\Component\Serializer\SerializerInterface;
+use function BenTools\IterableFunctions\iterable_to_array;
 
 final class FilesystemStorage implements Storage
 {
@@ -49,9 +51,16 @@ final class FilesystemStorage implements Storage
 HTML);
     }
 
+    /**
+     * @param iterable<PhpVersion> $versions
+     */
     private function writeAllVersionsFile(iterable $versions): void
     {
-        $this->writeJson('all.json', $versions);
+        $data = (new Collection($versions))
+            ->sort(static fn (PhpVersion $item1, PhpVersion $item2): int => -1 * version_compare($item1->getVersion(), $item2->getVersion()))
+            ->values();
+
+        $this->writeJson('all.json', $data);
     }
 
     /**
@@ -59,33 +68,39 @@ HTML);
      */
     private function writeMaintenedVersions(iterable $versions): void
     {
-        $data = (new Collection($versions))->filter(
-            fn (PhpVersion $version): bool => $version->getEndOfLife() > $this->clock->now(),
-        );
+        $data = (new Collection($versions))
+            ->filter(fn (PhpVersion $version): bool => $version->getEndOfLife() > $this->clock->now())
+            ->sort(static fn (PhpVersion $item1, PhpVersion $item2): int => -1 * version_compare($item1->getVersion(), $item2->getVersion()))
+            ->values();
 
         $this->writeJson('maintened.json', $data);
     }
 
     private function writeUnmaintenedVersions(iterable $versions): void
     {
-        $data = (new Collection($versions))->filter(
-            fn (PhpVersion $version): bool => $version->getEndOfLife() <= $this->clock->now(),
-        );
+        $data = (new Collection($versions))
+            ->filter(fn (PhpVersion $version): bool => $version->getEndOfLife() <= $this->clock->now())
+            ->sort(static fn (PhpVersion $a, PhpVersion $b): int => -1 * version_compare($a->getVersion(), $b->getVersion()))
+            ->values();
 
         $this->writeJson('unmaintened.json', $data);
     }
 
     private function writeReleaseVersions(iterable $releases): void
     {
-        $this->writeJson('releases.json', $releases);
+        $data = (new Collection($releases))
+            ->sort(static fn (PhpRelease $a, PhpRelease $b): int => -1 * ($a->getReleaseDate() <=> $b->getReleaseDate()))
+            ->values();
+
+        $this->writeJson('releases.json', $data);
     }
 
     private function writeJson(string $file, iterable $data): void
     {
-        $this->writeContent($file, ['items' => $this->serializer->serialize($data, 'json')]);
+        $this->writeContent($file, $this->serializer->serialize(['items' => $data], 'json'));
     }
 
-    private function writeContent(string $file, iterable|string $data): void
+    private function writeContent(string $file, string $data): void
     {
         $fullpath = rtrim($this->outputFolder, DIRECTORY_SEPARATOR).'/'.ltrim($file, DIRECTORY_SEPARATOR);
 
