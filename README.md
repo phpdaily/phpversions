@@ -1,3 +1,11 @@
+# PLEASE NOTE, THIS PROJECT IS NO LONGER BEING MAINTAINED
+
+There is an official way to have these data: https://www.php.net/releases/states
+
+https://github.com/php/web-php/pull/785
+
+* * *
+
 phpversions
 ===========
 
