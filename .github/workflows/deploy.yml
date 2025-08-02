@@ -24,9 +24,9 @@ jobs:
               with:
                   php-version: 8.2
             - name: Install composer dependencies
-              uses: ramsey/composer-install@v2
+              uses: ramsey/composer-install@v3
             - run: php bin/console synchronize:files
-            - uses: actions/upload-pages-artifact@v1
+            - uses: actions/upload-pages-artifact@v3
               with:
                   path: ./dist
 
@@ -39,4 +39,4 @@ jobs:
         steps:
             - name: Deploy to GitHub Pages
               id: deployment
-              uses: actions/deploy-pages@v1
+              uses: actions/deploy-pages@v4
